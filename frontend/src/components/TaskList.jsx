@@ -1,8 +1,10 @@
 import React from "react";
-import useTasks from "../hooks/useTasks";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleTaskAsync, deleteTaskAsync } from "../store/tasksSlice";
 
-function TaskList({ tasks }) {
-  const { toggleTask, deleteTask } = useTasks();
+function TaskList() {
+  const dispatch = useDispatch();
+  const tasks = useSelector((state) => state.tasks.list);
 
   return (
     <div className="task-list">
@@ -17,16 +19,20 @@ function TaskList({ tasks }) {
             disabled
             className="task-checkbox"
           />
-          <p className="task-title">{task.title}</p>
+          <span className="task-title">{task.title}</span>
           <div className="task-actions">
             <button
-              onClick={() => toggleTask(task._id, task.completed)}
+              onClick={() =>
+                dispatch(
+                  toggleTaskAsync({ id: task._id, completed: !task.completed })
+                )
+              }
               className="complete-button"
             >
               {task.completed ? "Undo" : "Complete"}
             </button>
             <button
-              onClick={() => deleteTask(task._id)}
+              onClick={() => dispatch(deleteTaskAsync(task._id))}
               className="delete-button"
             >
               Delete
